@@ -1,0 +1,15 @@
+<html>
+<title>Tim's Journal</title>
+<body>
+<h1>Tim's Journal</h1>
+{% for entry in entries %}
+    <pre> {{ entry }} </pre>
+    {{ '-' * 80 }}
+{% endfor %}
+<P>
+<a name=Entry>
+<form method='POST' action='/#Entry'>
+<textarea rows='20' cols='80' wrap='HARD' name='Entry'></textarea><br>
+<input type='SUBMIT' name='Submit' value='Write Log Entry'>
+</form>
+</html>
