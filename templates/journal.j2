@@ -2,10 +2,12 @@
 <title>Tim's Journal</title>
 <body>
 <h1>Tim's Journal</h1>
+<pre>
 {% for entry in entries %}
-    <pre> {{ entry }} </pre>
-    {{ '-' * 80 }}
+{{ entry }}
+{{ '-' * 80 }}
 {% endfor %}
+</pre>
 <P>
 <a name=Entry>
 <form method='POST' action='/#Entry'>
