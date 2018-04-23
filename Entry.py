@@ -40,5 +40,8 @@ class Entry(object):
         for entry in entries:
             json_entries.append(Entry.to_json_dict(entry))
 
+        # TODO: Surround with a try, write to a temp file, and if there's no
+        # exception, atomically rename. This protects the original file in case
+        # of an error.
         with open(file_name, 'w') as json_file:
             json.dump(json_entries, json_file)
