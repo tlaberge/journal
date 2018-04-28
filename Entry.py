@@ -1,6 +1,8 @@
 import json
 from datetime import datetime
 from time import time
+from tempfile import NamedTemporaryFile
+from os import rename
 
 
 class Entry(object):
@@ -32,6 +34,7 @@ class Entry(object):
             json_entries = json.load(json_file)
             for json_dict in json_entries:
                 entries.append(Entry.from_json_dict(json_dict))
+
         return entries
 
     @staticmethod
@@ -40,8 +43,10 @@ class Entry(object):
         for entry in entries:
             json_entries.append(Entry.to_json_dict(entry))
 
-        # TODO: Surround with a try, write to a temp file, and if there's no
-        # exception, atomically rename. This protects the original file in case
-        # of an error.
-        with open(file_name, 'w') as json_file:
-            json.dump(json_entries, json_file)
+        # Preserve the original file by writing to a temp file and then
+        # atomically renaming. If we take an exception, the original file
+        # remains. 'delete' is set to False because otherwise the context
+        # manager won't be able to unlink the renamed file.
+        with NamedTemporaryFile('w', delete=False) as tmp_file:
+            json.dump(json_entries, tmp_file)
+            rename(tmp_file.name, file_name)

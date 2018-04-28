@@ -6,13 +6,15 @@ from Entry import Entry
 
 app = Flask(__name__)
 
-entries = [ Entry("A sample entry")]
+# entries = [ Entry("A sample entry")]
 entry_file = None
 s3_token = None
 
 
 @app.route('/', methods=['get', 'post'])
 def index():
+    global entries
+
     if entry_file:
         entries = Entry.entries_from_json_file(entry_file)
     else:
