@@ -1,17 +1,50 @@
 <html>
-<title>Tim's Journal</title>
+<head>
+    <title>{{ user }}'s Journal</title>
+    <style>
+        body {
+            background-color: #fafafa;
+            padding-left: 10px;
+        }
+        pre {
+            font-size: 14pt;
+            padding-left: 10px
+        }
+        textarea {
+            font-family: Courier, monospace;
+            font-size: 14pt;
+            padding: 10px;
+            background-color: #ffffff;
+        }
+
+        input[type=submit] {
+            font-family: Courier, monospace;
+            font-size: 12pt;
+        }
+
+        #submit {
+            padding-top: 10px;
+        }
+    </style>
+</head>
+
 <body>
-<h1>Tim's Journal</h1>
+
+<h1>{{ user }}'s Journal</h1>
+
 <pre>
 {% for entry in entries %}
 {{ entry }}
-{{ '-' * 80 }}
+{{ '-' * 120 -}}
 {% endfor %}
 </pre>
+
 <P>
-<a name=Entry>
-<form method='POST' action='/#Entry'>
-<textarea rows='20' cols='80' wrap='HARD' name='Entry'></textarea><br>
-<input type='SUBMIT' name='Submit' value='Write Log Entry'>
+
+<form id="Entry" method='POST' action='/#Entry'>
+    <textarea rows='24' cols='120' wrap='HARD' name='Entry'></textarea><br>
+    <div id="submit"><input type='SUBMIT' name='Submit' value='Write Journal Entry'></div>
 </form>
+
+</body>
 </html>
