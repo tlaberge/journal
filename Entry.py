@@ -22,26 +22,25 @@ class Entry(object):
         else:
             self.timestamp = time()
 
+    '''
     def to_json_dict(self):
         return {'text': self.text, 'timestamp': str(self.timestamp)}
+    '''
 
     def __str__(self):
         return "{}<br><br>{}".format(datetime.fromtimestamp(self.timestamp).strftime("%c"), unescape(self.text))
 
+    '''
     @staticmethod
     def from_json_dict(json_dict):
         return Entry(json_dict['text'], float(json_dict['timestamp']))
+    '''
 
     @staticmethod
-    def entries_from_json_file(file_name):
-        entries = []
-        with open(file_name, 'r') as json_file:
-            json_entries = json.load(json_file)
-            for json_dict in json_entries:
-                entries.append(Entry.from_json_dict(json_dict))
+    def sort_entries(entries):
+        return sorted(entries, key=lambda e: e.timestamp)
 
-        return entries
-
+    '''
     @staticmethod
     def entries_to_json_file(file_name, entries):
         json_entries = []
@@ -54,7 +53,8 @@ class Entry(object):
         # manager won't be able to unlink the renamed file.
         with NamedTemporaryFile('w', delete=False) as tmp_file:
             json.dump(json_entries, tmp_file)
-            rename(tmp_file.name, file_name)
+        rename(tmp_file.name, file_name)
+    
 
     @classmethod
     def get_entries_from_s3(cls, bucket_name):
@@ -70,3 +70,4 @@ class Entry(object):
     @classmethod
     def push_entry_to_s3(cls, bucket_name, entry):
         cls.s3.Object(bucket_name, str(entry.timestamp)).put(Body=entry.text, ServerSideEncryption='AES256')
+'''

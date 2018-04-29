@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>{{ user }}'s Journal</title>
+    <title>{{ user }}'s {{ subject }} Journal</title>
     <style>
         body {
             background-color: #fafafa;
@@ -30,7 +30,7 @@
 
 <body>
 
-<h1>{{ user }}'s Journal</h1>
+<h1>{{ user }}'s {{ subject }} Journal</h1>
 
 <pre>
 {% for entry in entries %}

@@ -1,56 +1,45 @@
-from argparse import ArgumentParser
 from flask import Flask, render_template, request
 from os import environ
 
 from Entry import Entry
+from Bucket import Bucket
 
-entry_file = None
-bucket_name = None
-user = None
-
+user = "Tim"
+subject = ""
 app = Flask(__name__)
 
 
 @app.route('/', methods=['get', 'post'])
 def index():
+    bucket = Bucket.bucket_factory()
+
     if request.method == 'POST':
-        print(request.form.get('Entry'))
         entry = Entry(request.form.get('Entry'))
+        bucket.put_entry(entry)
 
-        if entry_file:
-            entries = Entry.entries_from_json_file(entry_file)
-            entries.append(entry)
-            Entry.entries_to_json_file(entry_file, entries)
-        else:
-            Entry.push_entry_to_s3(bucket_name, entry)
+    entries = bucket.get_entries()
 
-    if entry_file:
-        entries = Entry.entries_from_json_file(entry_file)
-    else:
-        entries = Entry.get_entries_from_s3(bucket_name)
-
-    return render_template('journal.j2', user=user, entries=sorted(entries, key=lambda e: e.timestamp))
+    return render_template('journal.j2', user=user, subject=subject, entries=entries)
 
 
 def main():
-    global entry_file
-    global bucket_name
     global user
+    global subject
 
-    if 'ENTRY_FILE' in environ:
-        entry_file = environ['ENTRY_FILE']
-    elif 'S3_BUCKET' in environ:
-        bucket_name = environ['S3_BUCKET']
-    else:
-        raise ValueError("Need ENTRY_FILE or S3_BUCKET in environment")
+    if 'BUCKET_DIR' not in environ and 'S3_BUCKET' not in environ:
+        raise ValueError("Need BUCKET_DIR or S3_BUCKET in environment")
 
-    parser = ArgumentParser()
-    parser.add_argument('--debug', '-d', action='store_true', default=False)
-    parser.add_argument('--user', '-u', action='store', default="Tim")
-    args = parser.parse_args()
+    if 'JOURNAL_USER' in environ:
+        user = environ['JOURNAL_USER']
 
-    user = args.user
-    app.run(debug=args.debug)
+    if 'JOURNAL_SUBJECT' in environ:
+        subject = environ['JOURNAL_SUBJECT']
+
+    debug = False
+    if 'DEBUG' in environ:
+        debug = True
+
+    app.run(debug=debug)
 
 
 if __name__ == "__main__":
