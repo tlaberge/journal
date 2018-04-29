@@ -35,11 +35,15 @@ def main():
     if 'JOURNAL_SUBJECT' in environ:
         subject = environ['JOURNAL_SUBJECT']
 
+    port=5000
+    if 'PORT' in environ:
+        port = int(environ['PORT'])
+
     debug = False
     if 'DEBUG' in environ:
         debug = True
 
-    app.run(debug=debug)
+    app.run(debug=debug, port=port)
 
 
 if __name__ == "__main__":
