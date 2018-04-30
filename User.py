@@ -28,18 +28,18 @@ class User(object):
             with open(password_file_name, 'r') as password_file:
                 users_json = json.load(password_file)
                 users = dict()
-                for user_json in users_json.values():
-                    user = User.user_from_json(user_json)
+                for username, password_hash in users_json.items():
+                    user = User(username, password_hash)
                     users[user.username] = user
                 return users
         except FileNotFoundError:
-            return []
+            return dict()
 
     @staticmethod
     def users_to_password_file(users, password_file_name):
         users_json = dict()
         for user in users.values():
-            users_json[user.username] = user.to_json()
+            users_json[user.username] = user.password_hash
         with open(password_file_name, 'w') as password_file:
             json.dump(users_json, password_file)
 
