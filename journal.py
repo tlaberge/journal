@@ -1,16 +1,19 @@
 from flask import Flask, render_template, request
 from flask_httpauth import HTTPBasicAuth
-from User import User
-auth = HTTPBasicAuth()
-
 from os import environ
 
-from Entry import Entry
 from Bucket import Bucket
+from Entry import Entry
 
-journal_user = "Tim"
+from User import User
+
+auth = HTTPBasicAuth()
+user_buckets = dict()
 subject = ""
+password_file = ".passwords"
+
 app = Flask(__name__)
+user_entries = dict()
 
 
 @auth.verify_password
@@ -26,37 +29,63 @@ def verify_password(username, password):
 @app.route('/', methods=['get', 'post'])
 @auth.login_required
 def index():
-    bucket = Bucket.bucket_factory()
+    user = request.authorization.username
+    bucket = user_buckets[user]
 
-    if request.method == 'POST':
-        entry = Entry(request.form.get('Entry'))
-        bucket.put_entry(entry)
+    checked = {'day': '', 'week': '', 'month': '', 'year': '', 'all': ''}
 
-    entries = bucket.get_entries()
+    since = 0
+    if request.method == 'GET':
+        checked['all'] = 'checked'
+    elif request.method == 'POST':
+        form_entry = request.form.get('Entry')
+        if form_entry:
+            entry = Entry(request.form.get('Entry'))
+            bucket.put_entry(entry)
 
-    return render_template('journal.j2', user=journal_user, subject=subject, entries=entries)
+        playback = request.form.get('playback')
+        if playback == 'day':
+            since = 24 * 3600.0
+        elif playback == 'week':
+            since = 24 * 3600 * 7.0
+        elif playback == 'month':
+            since = 24 * 3600 * 31.0
+        elif playback == 'year':
+            since = 24 * 3600 * 365.25
+        elif playback == 'all':
+            since = 0
+
+        checked[playback] = 'checked'
+
+    entries = bucket.get_entries(since=since)
+
+    return render_template('journal.j2', user=user, subject=subject, entries=entries, checked=checked)
 
 
 def main():
-    global journal_user
     global subject
+    global password_file
 
-    if 'BUCKET_DIR' not in environ and 'S3_BUCKET' not in environ:
-        raise ValueError("Need BUCKET_DIR or S3_BUCKET in environment")
-
-    if 'JOURNAL_USER' in environ:
-        journal_user = environ['JOURNAL_USER']
+    if 'BUCKET_DIR_BASE' not in environ and 'S3_BUCKET_BASE' not in environ:
+        raise ValueError("Need BUCKET_DIR_BASE or S3_BUCKET_BASE in environment")
 
     if 'JOURNAL_SUBJECT' in environ:
         subject = environ['JOURNAL_SUBJECT']
 
-    port=5000
+    if 'PASSWORD_FILE' in environ:
+        password_file = environ['PASSWORD_FILE']
+
+    port = 5000
     if 'PORT' in environ:
         port = int(environ['PORT'])
 
     debug = False
     if 'DEBUG' in environ:
         debug = True
+
+    users = User.users_from_password_file(password_file)
+    for user in users:
+        user_buckets[user] = Bucket.bucket_factory(user)
 
     app.run(debug=debug, port=port)
 

@@ -19,8 +19,11 @@ class Entry(object):
         return "{}<br><br>{}".format(datetime.fromtimestamp(self.timestamp).strftime("%c"), unescape(self.text))
 
     @staticmethod
-    def sort_entries(entries):
-        return sorted(entries, key=lambda e: e.timestamp)
+    def sort_entries(entries, since=0):
+        filtered_entries = entries
+        if since:
+            filtered_entries = filter(lambda e: e.timestamp > time() - since, entries)
+        return sorted(filtered_entries, key=lambda e: e.timestamp)
 
     @staticmethod
     def is_instance(obj):

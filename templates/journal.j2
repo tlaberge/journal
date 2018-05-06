@@ -43,7 +43,18 @@
 
 <form id="Entry" method='POST' action='/#Entry'>
     <textarea rows='24' cols='120' wrap='HARD' name='Entry'></textarea><br>
-    <div id="submit"><input type='SUBMIT' name='Submit' value='Write Journal Entry'></div>
+    <div id="submit">
+        <table>
+            <tr class="">
+                <td class=""><input type='SUBMIT' name='Submit' value='Write Journal Entry'></td>
+                <td class=""><input type="radio" name="playback" value="day" {{ checked['day'] }}>Day</td>
+                <td class=""><input type="radio" name="playback" value="week" {{ checked['week'] }}>Week</td>
+                <td class=""><input type="radio" name="playback" value="month" {{ checked['month'] }}>Month</td>
+                <td class=""><input type="radio" name="playback" value="year" {{ checked['year'] }}>Year</td>
+                <td class=""><input type="radio" name="playback" value="all" {{ checked['all'] }}>All</td>
+            </tr>
+        </table>
+    </div>
 </form>
 
 </body>
