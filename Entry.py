@@ -1,7 +1,7 @@
 from datetime import datetime
 from html import escape, unescape
 from time import time
-
+from pytz import timezone, utc
 
 class Entry(object):
     def __init__(self, text, timestamp=None):
@@ -16,7 +16,11 @@ class Entry(object):
             self.timestamp = time()
 
     def __str__(self):
-        return "{}<br><br>{}".format(datetime.fromtimestamp(self.timestamp).strftime("%c"), unescape(self.text))
+        naive_dt = datetime.fromtimestamp(self.timestamp)
+        utc_dt = utc.localize(naive_dt)
+        user_tz = timezone('America/Los_Angeles')
+        user_dt = utc_dt.astimezone(user_tz)
+        return "{}<br><br>{}".format(user_dt.strftime("%c"), unescape(self.text))
 
     @staticmethod
     def sort_entries(entries, since=0):

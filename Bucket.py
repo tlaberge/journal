@@ -22,9 +22,9 @@ class Bucket(object):
 
     @staticmethod
     def bucket_factory(user):
-        if 'S3_BUCKET' in environ:
+        if 'S3_BUCKET_BASE' in environ:
             return S3Bucket("{}.{}".format(environ['S3_BUCKET_BASE'],user))
-        elif 'BUCKET_DIR' in environ:
+        elif 'BUCKET_DIR_MASE' in environ:
             return DirectoryBucket("{}.{}".format(environ['BUCKET_DIR_BASE'], user))
         else:
             raise ValueError("Need to export S3_BUCKET_BASE or BUCKET_DIR_BASE")
