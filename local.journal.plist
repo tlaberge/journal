@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>local.journal</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Users/tlaberge/Envs/journal/bin/python</string>
+        <string>/Users/tlaberge/git/journal/journal.py</string>
+    </array>
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>BUCKET_DIR_BASE</key>
+        <string>journal_bucket</string>
+        <key>JOURNAL_USER</key>
+        <string>Tim</string>
+        <key>JOURNAL_SUBJECT</key>
+        <string>Work</string>
+        <key>PORT</key>
+        <string>8001</string>
+    </dict>
+    <key>StandardOutPath</key>
+    <string>/Users/tlaberge/git/journal/journal.out</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/tlaberge/git/journal/journal_error.out</string>
+    <key>WorkingDirectory</key>
+    <string>/Users/tlaberge/git/journal</string>
+    <key>KeepAlive</key>
+    <true/>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>ThrottleInterval</key>
+    <integer>30</integer>
+</dict>
+</plist>

@@ -3,6 +3,7 @@ from html import escape, unescape
 from time import time
 from pytz import timezone, utc
 
+
 class Entry(object):
     def __init__(self, text, timestamp=None):
         """
@@ -30,6 +31,8 @@ class Entry(object):
         return sorted(filtered_entries, key=lambda e: e.timestamp)
 
     @staticmethod
-    def is_instance(obj):
-        if not isinstance(obj, Entry):
-            raise TypeError("Entry {} is of type {} require {}".format(obj, type(obj), type(Entry)))
+    def check_attributes(obj):
+        if not hasattr(obj, 'text'):
+            raise TypeError("Entry object lacks a 'text' attribute")
+        if not hasattr(obj, 'timestamp'):
+            raise TypeError("Entry object lacks a 'timestamp' attribute")

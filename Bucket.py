@@ -17,14 +17,14 @@ class Bucket(object):
         return Entry.sort_entries(self.entry_cache, since)
 
     def put_entry(self, entry):
-        Entry.is_instance(entry)
+        Entry.check_attributes(entry)
         self.entry_cache.append(entry)
 
     @staticmethod
     def bucket_factory(user):
         if 'S3_BUCKET_BASE' in environ:
-            return S3Bucket("{}.{}".format(environ['S3_BUCKET_BASE'],user))
-        elif 'BUCKET_DIR_MASE' in environ:
+            return S3Bucket("{}.{}".format(environ['S3_BUCKET_BASE'], user))
+        elif 'BUCKET_DIR_BASE' in environ:
             return DirectoryBucket("{}.{}".format(environ['BUCKET_DIR_BASE'], user))
         else:
             raise ValueError("Need to export S3_BUCKET_BASE or BUCKET_DIR_BASE")

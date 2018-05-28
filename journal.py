@@ -1,6 +1,7 @@
 from collections import OrderedDict
 from flask import Flask, render_template, request
 from flask_httpauth import HTTPBasicAuth
+import logging
 from os import environ
 
 from Bucket import Bucket
@@ -73,6 +74,7 @@ def main():
     global password_file
     global journal_users
 
+    logging.basicConfig(level=logging.INFO)
     if 'BUCKET_DIR_BASE' not in environ and 'S3_BUCKET_BASE' not in environ:
         raise ValueError("Need BUCKET_DIR_BASE or S3_BUCKET_BASE in environment")
 
@@ -82,6 +84,7 @@ def main():
     port = 5000
     if 'PORT' in environ:
         port = int(environ['PORT'])
+        logging.info("Set port to {}".format(port))
 
     debug = False
     if 'DEBUG' in environ:
