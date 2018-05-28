@@ -6,26 +6,26 @@
     <string>local.journal</string>
     <key>ProgramArguments</key>
     <array>
-        <string>/Users/tlaberge/Envs/journal/bin/python</string>
-        <string>/Users/tlaberge/git/journal/journal.py</string>
+        <string>[Path to virtual env's python]</string>
+        <string>[Path to script]</string>
     </array>
     <key>EnvironmentVariables</key>
     <dict>
         <key>BUCKET_DIR_BASE</key>
-        <string>journal_bucket</string>
+        <string>[Location of bucket directory]</string>
         <key>JOURNAL_USER</key>
-        <string>Tim</string>
+        <string>[User]</string>
         <key>JOURNAL_SUBJECT</key>
-        <string>Work</string>
+        <string>[work/personal]</string>
         <key>PORT</key>
-        <string>8001</string>
+        <string>[8001]</string>
     </dict>
     <key>StandardOutPath</key>
-    <string>/Users/tlaberge/git/journal/journal.out</string>
+    <string>[path]</string>
     <key>StandardErrorPath</key>
-    <string>/Users/tlaberge/git/journal/journal_error.out</string>
+    <string>[path]</string>
     <key>WorkingDirectory</key>
-    <string>/Users/tlaberge/git/journal</string>
+    <string>[Path to Working Dir]</string>
     <key>KeepAlive</key>
     <true/>
     <key>RunAtLoad</key>
