@@ -26,7 +26,6 @@ def verify_password(username, password):
     return user.verify_password(password)
 
 
-# TODO: Wrap the login_required wrapper so that it's 'login_required if secure' or something...
 @app.route('/', methods=['get', 'post'])
 @auth.login_required
 def index():
@@ -77,6 +76,10 @@ def main():
     logging.basicConfig(level=logging.INFO)
     if 'BUCKET_DIR_BASE' not in environ and 'S3_BUCKET_BASE' not in environ:
         raise ValueError("Need BUCKET_DIR_BASE or S3_BUCKET_BASE in environment")
+
+    if 'USER_TZ' in environ:
+        # Running in AWS, so need to account for TZ.
+        Entry.user_tz = environ['USER_TZ']
 
     if 'PASSWORD_FILE' in environ:
         password_file = environ['PASSWORD_FILE']

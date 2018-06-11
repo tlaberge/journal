@@ -20,6 +20,7 @@
         input[type=submit] {
             font-family: Courier, monospace;
             font-size: 12pt;
+            border-radius: 6pt;
         }
 
         #submit {
@@ -34,8 +35,8 @@
 
 <pre>
 {% for entry in entries %}
-{{ entry }}
-{{ '-' * 120 -}}
+{{     entry }}
+{{     '-' * 120 -}}
 {% endfor %}
 </pre>
 
@@ -46,7 +47,7 @@
     <div id="submit">
         <table>
             <tr class="">
-                <td class=""><input type='SUBMIT' name='Submit' value='Write Journal Entry'></td>
+                <td class=""><input type='SUBMIT' name='Submit' value='Write Journal Entry'>&nbsp;</td>
                 <td class="item">Display entries for last: </td>
                 {% for value in checked %}
                 <td class="">

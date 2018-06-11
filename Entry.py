@@ -5,6 +5,8 @@ from pytz import timezone, utc
 
 
 class Entry(object):
+    user_tz = None
+
     def __init__(self, text, timestamp=None):
         """
         'text' is the entry's text. Escape it so that we can use <,&, ; etc in the journal.
@@ -18,9 +20,12 @@ class Entry(object):
 
     def __str__(self):
         naive_dt = datetime.fromtimestamp(self.timestamp)
-        utc_dt = utc.localize(naive_dt)
-        user_tz = timezone('America/Los_Angeles')
-        user_dt = utc_dt.astimezone(user_tz)
+        if Entry.user_tz:
+            utc_dt = utc.localize(naive_dt)
+            local_dt = timezone(Entry.user_tz)
+            user_dt = utc_dt.astimezone(local_dt)
+        else:
+            user_dt = naive_dt
         return "{}<br><br>{}".format(user_dt.strftime("%c"), unescape(self.text))
 
     @staticmethod

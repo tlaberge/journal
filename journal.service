@@ -1,0 +1,23 @@
+# /lib/systemd/system/journal.service
+# systemctl daemon-reload
+# systemctl [re]start journal
+[Unit]
+Description=Journal Service
+After=network.target network-online.target
+
+[Service]
+User=ubuntu
+Group=ubuntu
+WorkingDirectory=/home/ubuntu/journal
+PermissionsStartOnly=true
+Environment=PATH=/home/ubuntu/Envs/journal/bin
+Environment=PYTHONPATH=/home/ubuntu/Envs/journal/bin/
+Environment=S3_BUCKET_BASE=personaljournal
+Environment=USER_TZ=America/Los_Angeles
+Environment=JOURNAL_USER=Tim
+Environment=JOURNAL_SUBJECT=Personal
+ExecStart=/home/ubuntu/Envs/journal/bin/python -m journal
+Restart=on-abort
+
+[Install]
+WantedBy=multi-user.target

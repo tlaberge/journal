@@ -1,6 +1,7 @@
 from os import path, environ, listdir
 import re
 import boto3
+import logging
 
 from Entry import Entry
 
@@ -33,6 +34,8 @@ class Bucket(object):
 class S3Bucket(Bucket):
     def __init__(self, bucket_name):
         Bucket.__init__(self, bucket_name)
+
+        logging.info("Initializing S3 Bucket with name {}".format(bucket_name))
         self.s3 = boto3.resource('s3')
         self.entry_cache = self.get_entries_from_bucket()
 
@@ -55,6 +58,8 @@ class S3Bucket(Bucket):
 class DirectoryBucket(Bucket):
     def __init__(self, bucket_name):
         Bucket.__init__(self, bucket_name)
+
+        logging.info("Initializing Directory Bucket with name {}".format(bucket_name))
         self.entry_cache = self.get_entries_from_bucket()
 
     def get_entries_from_bucket(self):

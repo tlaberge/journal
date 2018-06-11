@@ -6,8 +6,8 @@ from Bucket import Bucket
 
 
 parser = ArgumentParser()
-parser.add_argument('user', action='store')
-parser.add_argument('input_file', action='store')
+parser.add_argument('--user', action='store', required=True)
+parser.add_argument('--input_file', action='store', required=True)
 args = parser.parse_args()
 
 bucket = Bucket.bucket_factory(args.user)
