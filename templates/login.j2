@@ -1,0 +1,63 @@
+<html>
+<head>
+    <title>{{ user }}'s {{ subject }} Journal</title>
+    <style>
+        body {
+            background-color: #fafafa;
+            padding-left: 10px;
+        }
+        pre {
+            font-size: 12pt;
+            padding-left: 10px
+        }
+        textarea {
+            font-family: Courier, monospace;
+            font-size: 12pt;
+            padding: 10px;
+            background-color: #ffffff;
+        }
+
+        input[type=submit] {
+            font-family: Courier, monospace;
+            font-size: 12pt;
+            border-radius: 6pt;
+        }
+
+        #submit {
+            padding-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>{{ user }}'s {{ subject }} Journal</h1>
+
+<pre>
+{% for entry in entries %}
+{{     entry }}
+{{     '-' * 120 -}}
+{% endfor %}
+</pre>
+
+<P>
+
+<form id="Entry" method='POST' action='/#Entry'>
+    <textarea rows='24' cols='120' wrap='HARD' name='Entry'></textarea><br>
+    <div id="submit">
+        <table>
+            <tr class="">
+                <td class=""><input type='SUBMIT' name='Submit' value='Write Journal Entry'>&nbsp;</td>
+                <td class="item">Display entries for last: </td>
+                {% for value in checked %}
+                <td class="">
+                    <input type="radio" name="playback" value="{{ value }}" {{ checked[value] }}>{{ value }}
+                </td>
+                {% endfor %}
+            </tr>
+        </table>
+    </div>
+</form>
+
+</body>
+</html>
