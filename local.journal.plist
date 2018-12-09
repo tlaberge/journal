@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>local.journal</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>[Path to virtual env's python]</string>
+        <string>[Path to script]</string>
+    </array>
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>BUCKET_DIR_BASE</key>
+        <string>[Location of bucket directory]</string>
+        <key>JOURNAL_USER</key>
+        <string>[User]</string>
+        <key>JOURNAL_SUBJECT</key>
+        <string>[work/personal]</string>
+        <key>PORT</key>
+        <string>[8001]</string>
+    </dict>
+    <key>StandardOutPath</key>
+    <string>[path]</string>
+    <key>StandardErrorPath</key>
+    <string>[path]</string>
+    <key>WorkingDirectory</key>
+    <string>[Path to Working Dir]</string>
+    <key>KeepAlive</key>
+    <true/>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>ThrottleInterval</key>
+    <integer>30</integer>
+</dict>
+</plist>

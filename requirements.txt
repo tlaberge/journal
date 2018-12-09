@@ -10,6 +10,7 @@ jmespath==0.9.3
 MarkupSafe==1.0
 passlib==1.7.1
 python-dateutil==2.7.2
+pytz==2018.4
 s3transfer==0.1.13
 six==1.11.0
 Werkzeug==0.14.1

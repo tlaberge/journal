@@ -1,6 +1,7 @@
 from os import path, environ, listdir
 import re
 import boto3
+import logging
 
 from Entry import Entry
 
@@ -17,14 +18,14 @@ class Bucket(object):
         return Entry.sort_entries(self.entry_cache, since)
 
     def put_entry(self, entry):
-        Entry.is_instance(entry)
+        Entry.check_attributes(entry)
         self.entry_cache.append(entry)
 
     @staticmethod
     def bucket_factory(user):
-        if 'S3_BUCKET' in environ:
-            return S3Bucket("{}.{}".format(environ['S3_BUCKET_BASE'],user))
-        elif 'BUCKET_DIR' in environ:
+        if 'S3_BUCKET_BASE' in environ:
+            return S3Bucket("{}.{}".format(environ['S3_BUCKET_BASE'], user))
+        elif 'BUCKET_DIR_BASE' in environ:
             return DirectoryBucket("{}.{}".format(environ['BUCKET_DIR_BASE'], user))
         else:
             raise ValueError("Need to export S3_BUCKET_BASE or BUCKET_DIR_BASE")
@@ -33,6 +34,8 @@ class Bucket(object):
 class S3Bucket(Bucket):
     def __init__(self, bucket_name):
         Bucket.__init__(self, bucket_name)
+
+        logging.info("Initializing S3 Bucket with name {}".format(bucket_name))
         self.s3 = boto3.resource('s3')
         self.entry_cache = self.get_entries_from_bucket()
 
@@ -55,6 +58,8 @@ class S3Bucket(Bucket):
 class DirectoryBucket(Bucket):
     def __init__(self, bucket_name):
         Bucket.__init__(self, bucket_name)
+
+        logging.info("Initializing Directory Bucket with name {}".format(bucket_name))
         self.entry_cache = self.get_entries_from_bucket()
 
     def get_entries_from_bucket(self):

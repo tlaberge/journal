@@ -1,5 +1,7 @@
+from collections import OrderedDict
 from flask import Flask, render_template, request
 from flask_httpauth import HTTPBasicAuth
+import logging
 from os import environ
 
 from Bucket import Bucket
@@ -9,11 +11,10 @@ from User import User
 
 auth = HTTPBasicAuth()
 user_buckets = dict()
-subject = ""
+journal_users = dict()
 password_file = ".passwords"
 
 app = Flask(__name__)
-user_entries = dict()
 
 
 @auth.verify_password
@@ -25,14 +26,16 @@ def verify_password(username, password):
     return user.verify_password(password)
 
 
-# TODO: Wrap the login_required wrapper so that it's 'login_required if secure' or something...
 @app.route('/', methods=['get', 'post'])
 @auth.login_required
 def index():
     user = request.authorization.username
     bucket = user_buckets[user]
 
-    checked = {'day': '', 'week': '', 'month': '', 'year': '', 'all': ''}
+    checked_keys = ['day', 'week', 'month', 'year', 'all']
+    checked = OrderedDict()
+    for key in checked_keys:
+        checked[key] = ''
 
     since = 0
     if request.method == 'GET':
@@ -59,18 +62,24 @@ def index():
 
     entries = bucket.get_entries(since=since)
 
-    return render_template('journal.j2', user=user, subject=subject, entries=entries, checked=checked)
+    return render_template('journal.j2',
+                           user=journal_users[user].display_name,
+                           subject=journal_users[user].subject,
+                           entries=entries,
+                           checked=checked)
 
 
 def main():
-    global subject
     global password_file
+    global journal_users
 
+    logging.basicConfig(level=logging.INFO)
     if 'BUCKET_DIR_BASE' not in environ and 'S3_BUCKET_BASE' not in environ:
         raise ValueError("Need BUCKET_DIR_BASE or S3_BUCKET_BASE in environment")
 
-    if 'JOURNAL_SUBJECT' in environ:
-        subject = environ['JOURNAL_SUBJECT']
+    if 'USER_TZ' in environ:
+        # Running in AWS, so need to account for TZ.
+        Entry.user_tz = environ['USER_TZ']
 
     if 'PASSWORD_FILE' in environ:
         password_file = environ['PASSWORD_FILE']
@@ -78,13 +87,14 @@ def main():
     port = 5000
     if 'PORT' in environ:
         port = int(environ['PORT'])
+        logging.info("Set port to {}".format(port))
 
     debug = False
     if 'DEBUG' in environ:
         debug = True
 
-    users = User.users_from_password_file(password_file)
-    for user in users:
+    journal_users = User.users_from_password_file(password_file)
+    for user in journal_users:
         user_buckets[user] = Bucket.bucket_factory(user)
 
     app.run(debug=debug, port=port)
