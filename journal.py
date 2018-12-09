@@ -1,8 +1,8 @@
 from collections import OrderedDict
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, session, flash, redirect, url_for
 from flask_httpauth import HTTPBasicAuth
 import logging
-from os import environ
+from os import environ, urandom
 
 from Bucket import Bucket
 from Entry import Entry
@@ -13,6 +13,7 @@ auth = HTTPBasicAuth()
 user_buckets = dict()
 journal_users = dict()
 password_file = ".passwords"
+port = 5000
 
 app = Flask(__name__)
 
@@ -26,10 +27,29 @@ def verify_password(username, password):
     return user.verify_password(password)
 
 
+@app.route('/login', methods=['POST'])
+def do_admin_login():
+    if verify_password(request.form['username'], request.form['password']):
+        session['logged_in'] = True
+        session['username'] = request.form['username']
+    else:
+        flash('wrong password!')
+    return redirect(url_for('index', _anchor="Entry"))
+
+
 @app.route('/', methods=['get', 'post'])
-@auth.login_required
 def index():
-    user = request.authorization.username
+    if not session.get('logged_in'):
+        return render_template('login.j2')
+    else:
+        return journal()
+
+
+def journal():
+    if not session.get('logged_in'):
+        flash('Not logged in')
+
+    user = session.get('username')
     bucket = user_buckets[user]
 
     checked_keys = ['day', 'week', 'month', 'year', 'all']
@@ -72,6 +92,7 @@ def index():
 def main():
     global password_file
     global journal_users
+    global port
 
     logging.basicConfig(level=logging.INFO)
     if 'BUCKET_DIR_BASE' not in environ and 'S3_BUCKET_BASE' not in environ:
@@ -97,6 +118,7 @@ def main():
     for user in journal_users:
         user_buckets[user] = Bucket.bucket_factory(user)
 
+    app.secret_key = urandom(12)
     app.run(debug=debug, port=port)
 
 
