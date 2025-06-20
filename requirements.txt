@@ -5,7 +5,7 @@ docutils==0.14
 Flask>2.2.5
 Flask-HTTPAuth==3.2.3
 itsdangerous==0.24
-Jinja2==2.11.3
+Jinja2
 jmespath==0.9.3
 MarkupSafe==1.0
 passlib==1.7.1
